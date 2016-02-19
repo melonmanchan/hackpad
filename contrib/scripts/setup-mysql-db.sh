@@ -61,7 +61,7 @@ fi
 
 
 echo "Creating database ${DATABASE}..."
-echo "create database ${DATABASE};" | ${MYSQL_CMD}
+echo "create database if not exists ${DATABASE};" | ${MYSQL_CMD}
 
 
 echo "Granting priviliges..."
