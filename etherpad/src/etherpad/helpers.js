@@ -601,7 +601,7 @@ function escapeHtml(s) {
 function _getCSPPolicy() {
   // CSP Policy with some helper constants
   // single quotes are important and easy to miss. Better define constants.
-  var SELF = "'self'";
+  var SELF = "*";
   var UNSAFE_INLINE = "'unsafe-inline'";
   var UNSAFE_EVAL = "'unsafe-eval'";
   var NONE = "'none'";
