@@ -89,6 +89,15 @@ and id on lines 258-260.
 
 and that should be enough to enable Google authentication for your Hackpad instance!
 
+## Step 2.2. Setting up email authentication
+
+If, like me, you had trouble getting SMTP to play nice with Hackpad, you can use the following handy little script:
+
+https://github.com/melonmanchan/hackpad/mailhack
+
+Follow it's instructions in the README.md for usage.
+
+
 ## Step 3. starting up the container
 
 After building and configuring your instance, start the container with
