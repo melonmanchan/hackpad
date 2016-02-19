@@ -11,6 +11,92 @@ This document contains licensing information relating to the use of free and ope
 This document identifies the FOSS packages used in the Hackpad software, the FOSS licenses that Dropbox believes govern those FOSS packages.  While Dropbox has sought to provide complete and accurate licensing information for each FOSS package, Dropbox does not represent or warrant that the licensing information provided herein is correct or error-free.  Recipients of the Hackpad software should investigate the identified FOSS packages to confirm the accuracy of the licensing information provided herein.  Recipients are also encouraged to notify Dropbox of any inaccurate information or errors found in these notices.
 
 
+# Aalto-specific installation notes
+
+## Step 1. getting the software
+
+You oughta use this fork of Hackpad since it contains some enchancements for running Hackpad inside of a Docker
+container in production.
+
+So first, you need to clone this repository.
+
+```sh
+    git clone https://github.com/melonmanchan/hackpad
+```
+
+Then, cd into the directory and build this repository as a Docker image
+
+```sh
+    docker build -t aalto-hackpad .
+```
+
+##
+
+## Step 2. Setting up configuration variables
+
+Modify the file under ./etherpad/etc/etherpad.docker.properties with your custom settings.
+The rows of particular interest are:
+
+```
+    etherpad.superUserEmailAddresses = __email_addresses_with_admin_access__
+
+    topdomains = localhost,localbox.info
+    etherpad.canonicalDomain = localhost:9000
+
+```
+
+the topdomains and canonicalDomain variables should be set to whatever the final public URL will be,
+for example
+
+```
+    topdomains = layersbox.aalto.fi
+    etherpad.canonicalDomain = layersbox.aalto.fi
+
+```
+## Step 2.1 Setting up the Google registration
+
+First, log in to the google developer console at https://console.developers.google.com
+
+Then, click on 'select a project' and then click on 'Create a project'. Input whatever name you
+desire. After a while, you should be redirected to the dashboard of your project. Click on the 'use
+Google APIs' tile, then click on the Google+ API under the 'Social APIs'-subsection and enable it.
+
+
+Next, click on Credentials in the side bar.  Click the 'Create credentials' button and select OAuth
+client ID. Select 'Web application' and click the 'Create' button.
+
+It's important to add the correct redirect url in the Restrictions-section. For Hackpad, it's
+
+```
+    http://<YOUR_HACKPAD_URL>/ep/account/openid
+```
+
+Next, copy the Client ID and Client secret from this very page
+
+After some testing, it seems like setting the googleConsumerKey and googleConsumerSecret in the
+properties file does not work for some reason, so your best bet is to open up ./src/e
+therpad/pro/google_accounts.js and replace the following lines with your own Google client secret
+and id on lines 258-260.
+
+```js
+    function clientDetails() {
+      return {token_uri :  "https://accounts.google.com/o/oauth2/token",
+              auth_uri : "https://accounts.google.com/o/oauth2/auth",
+              client_secret: YOUR_API_SECRET_HERE,
+              client_id: YOUR_API_ID_HERE};
+    }
+```
+
+and that should be enough to enable Google authentication for your Hackpad instance!
+
+## Step 3. starting up the container
+
+After building and configuring your instance, start the container with
+
+```sh
+    docker run -d -p 9000:9000 -v /path/to/this/repo:/etc/hackpad/src aalto-hackpad
+```
+
 ------
 
 
